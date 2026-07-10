@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-6 col-lg-5">
+  <div class="auth-card">
+    <h4 class="mb-1">Create your account</h4>
+    <p class="text-muted mb-4">Get personalised alerts and save opportunities</p>
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="name" class="form-control" required placeholder="Rahul Sharma">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" required placeholder="you@email.com">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" required minlength="6">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Class / Year</label>
+        <select name="class_year" class="form-select">
+          <option value="">Select</option>
+          <option>Class 10</option><option>Class 11</option><option>Class 12</option>
+          <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>Final Year</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Stream / Branch</label>
+        <input type="text" name="stream" class="form-control" placeholder="e.g. CS, Commerce, Science">
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Interests (select all that apply)</label>
+        <div class="d-flex flex-wrap gap-2">
+          {% for cat in ['Scholarship','Internship','Hackathon','Competition','Admission'] %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="{{ cat }}" id="i{{ cat }}">
+            <label class="form-check-label" for="i{{ cat }}">{{ cat }}</label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Create Account</button>
+    </form>
+    <p class="text-center mt-3 text-muted">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+  </div>
+</div>
+</div>
+{% endblock %}

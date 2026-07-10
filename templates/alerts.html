@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Alert Preferences{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-6">
+  <div class="auth-card">
+    <h4 class="mb-1"><i class="bi bi-bell-fill text-primary"></i> Email Alert Settings</h4>
+    <p class="text-muted mb-4">We'll email you 3 days before any deadline.</p>
+    <form method="POST">
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" name="alert_email" id="alertSwitch"
+               {% if user.alert_email %}checked{% endif %}>
+        <label class="form-check-label" for="alertSwitch">
+          Enable email deadline alerts
+        </label>
+      </div>
+      <p class="text-muted small mb-4">Alerts will be sent to: <strong>{{ user.email }}</strong></p>
+      <button type="submit" class="btn btn-primary">Save Preferences</button>
+    </form>
+  </div>
+</div>
+</div>
+{% endblock %}

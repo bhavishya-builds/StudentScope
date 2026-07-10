@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}{{ c.name }} Counselling{% endblock %}
+{% block content %}
+
+<div class="cd-hero reveal">
+  <a href="{{ url_for('index') }}#counselling" class="cd-back"><i class="bi bi-arrow-left"></i> Back to all counselling</a>
+
+  <div class="cd-icon-wrap" style="background:{{ c.color }}">{{ c.icon }}</div>
+  <h1 class="cd-title">{{ c.name }} <span>Counselling</span></h1>
+  <p class="cd-full">{{ c.full }}</p>
+
+  <div class="cd-badges">
+    <span class="cd-badge" style="background:rgba(0,212,255,.1);color:var(--blue);border:1px solid rgba(0,212,255,.22)">
+      <i class="bi bi-building"></i> {{ c.conducting }}
+    </span>
+    <span class="cd-badge" style="background:rgba(191,95,255,.1);color:var(--purple);border:1px solid rgba(191,95,255,.22)">
+      <i class="bi bi-mortarboard-fill"></i> {{ c.seats }}
+    </span>
+    <span class="cd-badge" style="background:rgba(255,184,0,.1);color:var(--amber);border:1px solid rgba(255,184,0,.2)">
+      <i class="bi bi-person-check-fill"></i> {{ c.eligibility }}
+    </span>
+  </div>
+
+  <p style="color:rgba(255,255,255,.65);font-size:.93rem;line-height:1.7;max-width:780px">{{ c.summary }}</p>
+</div>
+
+<!-- ══ REGISTRATION STATUS ══ -->
+<div class="reg-status-box rsb-{{ c.reg_status }} d-flex align-items-center gap-20 reveal" style="gap:20px">
+  <div class="rsb-icon">
+    {% if c.reg_status == 'open' %}✅
+    {% elif c.reg_status == 'soon' %}⏳
+    {% elif c.reg_status == 'closed' %}🔴
+    {% else %}⚫{% endif %}
+  </div>
+  <div class="flex-grow-1">
+    <div class="rsb-label">Registration Status</div>
+    <div class="rsb-main">
+      {% if c.reg_status == 'open' %}Registration is OPEN — Apply Now!
+      {% elif c.reg_status == 'soon' %}Registration Opening Soon
+      {% elif c.reg_status == 'closed' %}Registration Closed
+      {% else %}Not Yet Announced{% endif %}
+    </div>
+    <div class="rsb-sub">{{ c.reg_note }} | Deadline: <strong>{{ c.reg_deadline }}</strong></div>
+    {% if c.extended %}
+    <div class="rsb-sub mt-1" style="color:var(--amber)">⚠️ Extended registration window expected — watch for official notice</div>
+    {% endif %}
+  </div>
+  {% if c.reg_status == 'open' %}
+  <a href="{{ c.website }}" target="_blank" class="btn-glow" style="white-space:nowrap;flex-shrink:0">
+    Register Now <i class="bi bi-box-arrow-up-right ms-1"></i>
+  </a>
+  {% endif %}
+</div>
+
+<!-- ══ KEY INFO ══ -->
+<div class="info-grid reveal">
+  <div class="info-card">
+    <div class="ic-label">📋 Results / Allotment</div>
+    <div class="ic-val {% if c.results_out %}good{% else %}warn{% endif %}">
+      {% if c.results_out %}✅ Results Declared{% else %}🕐 {{ c.result_note }}{% endif %}
+    </div>
+  </div>
+  <div class="info-card">
+    <div class="ic-label">📞 Helpline</div>
+    <div class="ic-val">{{ c.helpline }}</div>
+  </div>
+  <div class="info-card">
+    <div class="ic-label">🌐 Official Website</div>
+    <div class="ic-val"><a href="{{ c.website }}" target="_blank" style="color:var(--blue);text-decoration:none">{{ c.website.replace('https://','') }} <i class="bi bi-arrow-up-right" style="font-size:.75rem"></i></a></div>
+  </div>
+  <div class="info-card">
+    <div class="ic-label">⚠️ Important Warning</div>
+    <div class="ic-val warn" style="font-size:.8rem">{{ c.important_warning }}</div>
+  </div>
+</div>
+
+<!-- ══ ROUND BY ROUND ══ -->
+<div class="rounds-detail reveal">
+  <div class="rd-title"><i class="bi bi-calendar3" style="color:var(--blue)"></i> Round-by-Round Dates</div>
+
+  {% for r in c.rounds %}
+  <div class="round-row">
+    <div class="rr-num">
+      <div class="rr-num-label">Round</div>
+      <div class="rr-num-val" style="font-size:{% if r.num|string|length > 2 %}0.75rem{% else %}1.4rem{% endif %}">{{ r.num }}</div>
+    </div>
+    <div class="rr-body">
+      <div class="rr-cell">
+        <div class="rr-cell-label">Registration / Choice Fill</div>
+        <div class="rr-cell-val {% if r.status=='active' %}act{% elif r.status=='next' %}urg{% elif r.status=='soon' %}wrn{% endif %}">{{ r.reg }}</div>
+      </div>
+      <div class="rr-cell">
+        <div class="rr-cell-label">Seat Allotment</div>
+        <div class="rr-cell-val">{{ r.allot }}</div>
+      </div>
+      <div class="rr-cell">
+        <div class="rr-cell-label">Accept / Report Deadline</div>
+        <div class="rr-cell-val {% if r.status=='active' %}urg{% endif %}">{{ r.accept }}</div>
+      </div>
+    </div>
+    <div class="rr-status">
+      <span class="rs-pill rsp-{{ r.status }}">
+        {% if r.status=='active' %}🟢 Active Now
+        {% elif r.status=='next' %}🔵 Up Next
+        {% elif r.status=='soon' %}🟡 Coming Soon
+        {% elif r.status=='done' %}⚫ Completed
+        {% else %}○ Scheduled{% endif %}
+      </span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- ══ DOCS NEEDED ══ -->
+<div class="reveal">
+  <div class="rd-title"><i class="bi bi-folder2-open" style="color:var(--purple)"></i> Documents You'll Need</div>
+  <div class="docs-grid">
+    {% for doc in c.docs %}
+    <div class="doc-item"><i class="bi bi-file-earmark-check-fill"></i> {{ doc }}</div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ══ PRO TIPS ══ -->
+<div class="tips-box reveal">
+  <h6><i class="bi bi-lightbulb-fill me-2"></i>Pro Tips — Don't Make These Mistakes</h6>
+  {% for tip in c.tips %}
+  <div class="tip-item">
+    <div class="tip-num">{{ loop.index }}</div>
+    <div>{{ tip }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- ══ APPLY CTA ══ -->
+<div class="apply-cta reveal">
+  <h5>Ready to Apply? Don't Wait.</h5>
+  <p>Every hour you delay is a risk. Register now and secure your chance at your dream college.</p>
+  <div class="d-flex gap-3 justify-content-center flex-wrap">
+    <a href="{{ c.website }}" target="_blank" class="btn-glow">Go to {{ c.name }} Portal <i class="bi bi-box-arrow-up-right ms-1"></i></a>
+    <a href="{{ url_for('register') }}" class="btn-ghost">Set Up My Alerts <i class="bi bi-bell-fill ms-1"></i></a>
+  </div>
+</div>
+
+{% endblock %}
